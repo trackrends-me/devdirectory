@@ -1,7 +1,7 @@
 // License Validation Service using Gemini AI
 // Detects and fixes license discrepancies automatically
 
-const GEMINI_API_KEY = (import.meta.env as any).VITE_GEMINI_API_KEY;
+const GEMINI_API_KEY = (import.meta as any).env.VITE_GEMINI_API_KEY;
 
 export interface LicenseValidationResult {
   detectedLicense: string | null;

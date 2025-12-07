@@ -147,8 +147,8 @@ const INITIAL_CATEGORY_GROUPS: CategoryGroup[] = [
 ];
 
 export const TECH_STACKS: TechStack[] = [];
-const INITIAL_LEARNING_PATHS: LearningPath[] = [];
-const INITIAL_BLOG_POSTS: BlogPost[] = [];
+
+// ... existing code ...
 
 // --- SECTION DATA ---
 const INITIAL_AI_TOOLS: AIToolSpotlight[] = [
@@ -281,14 +281,15 @@ export const GithubTrendingService = createCRUD<GithubRepo>(STORAGE_KEY_GITHUB, 
 export const CloudService = createCRUD<CloudProvider>(STORAGE_KEY_CLOUD, INITIAL_CLOUD);
 export const SelfHostedService = createCRUD<SelfHostedTool>(STORAGE_KEY_SELFHOSTED, INITIAL_SELF_HOSTED);
 
-export const LearningService = createCRUD<LearningPath>(STORAGE_KEY_LEARNING, INITIAL_LEARNING_PATHS);
+export const LearningService = createCRUD<LearningPath>(STORAGE_KEY_LEARNING, []);
+// ... existing code ...
 export const getLearningPaths = LearningService.get;
 export const getLearningPathById = (id: string) => LearningService.get().find(p => p.id === id);
 export const addLearningPath = LearningService.add;
 export const deleteLearningPath = LearningService.remove;
 export const updateLearningPath = (p: LearningPath) => LearningService.update(p);
 
-export const BlogService = createCRUD<BlogPost>(STORAGE_KEY_BLOG, INITIAL_BLOG_POSTS);
+export const BlogService = createCRUD<BlogPost>(STORAGE_KEY_BLOG, []);
 export const getBlogPosts = BlogService.get;
 export const getBlogPostById = (id: string) => BlogService.get().find(p => p.id === id);
 export const addBlogPost = BlogService.add;

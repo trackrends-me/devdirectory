@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { CATEGORY_GROUPS } from '../services/dataService';
 import { IconMap } from './ui/Cards';
+import { PRICING_OPTIONS, STARS_FILTERS, RATING_LABELS } from '../constants';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -183,7 +184,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <DollarSign className="w-3 h-3 text-primary-500" /> Pricing
                     </h4>
                     <div className="space-y-1">
-                        {['all', 'Free', 'Open Source', 'Freemium', 'Paid'].map(p => (
+                        {PRICING_OPTIONS.map(p => (
                             <button
                                 key={p}
                                 onClick={() => onSelectPricing(p)}
@@ -201,13 +202,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <Star className="w-3 h-3 text-primary-500" /> Stars
                     </h4>
                     <div className="space-y-1">
-                        {[0, 1000, 10000, 50000].map(s => (
+                        {STARS_FILTERS.map(s => (
                             <button
                                 key={s}
                                 onClick={() => onSelectStars(s)}
                                 className={`w-full text-left px-2 py-1.5 text-xs rounded transition-colors ${minStars === s ? 'bg-primary-50 dark:bg-primary-500/10 text-primary-600 dark:text-primary-400' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'}`}
                             >
-                                {s === 0 ? 'Any Rating' : `${s/1000}k+ Stars`}
+                                {RATING_LABELS[s]}
                             </button>
                         ))}
                     </div>
