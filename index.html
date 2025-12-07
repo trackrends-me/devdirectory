@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevDirectory.net | The Everything Store for Developers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          container: {
+            center: true,
+            screens: {
+              sm: '640px',
+              md: '768px',
+              lg: '1024px',
+              xl: '1280px',
+              '2xl': '1400px',
+            },
+          },
+          extend: {
+            colors: {
+              // Custom Primary Brand Color (Blue)
+              primary: {
+                50: '#eff6ff', // Light backgrounds/pills
+                100: '#dbeafe', // Borders for light backgrounds
+                200: '#bfdbfe', 
+                300: '#93c5fd', 
+                400: '#60a5fa', 
+                500: '#3b82f6', // Focus rings
+                600: '#2563eb', // Main Action Color
+                700: '#1d4ed8', // Hover states
+                800: '#1e40af', 
+                900: '#1e3a8a', 
+              },
+              // Mapping Navy to Slate for Dark Mode consistency
+              navy: {
+                800: '#1e293b', // Slate 800
+                900: '#0f172a', // Slate 900
+                950: '#020617', // Slate 950
+              },
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            animation: {
+              'blob': 'blob 7s infinite',
+              'fade-in': 'fadeIn 0.5s ease-out',
+              'slide-up': 'slideUp 0.5s ease-out',
+              'scroll': 'scroll 40s linear infinite',
+            },
+            keyframes: {
+              blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              scroll: {
+                '0%': { transform: 'translateX(0)' },
+                '100%': { transform: 'translateX(-50%)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+      // Configure marked to use IDs for headings
+      window.addEventListener('DOMContentLoaded', () => {
+        if (window.marked) {
+          const renderer = new window.marked.Renderer();
+          renderer.heading = function (text, level) {
+            const safeText = String(text || '');
+            const escapedText = safeText.toLowerCase().replace(/[^\w]+/g, '-');
+            return `<h${level} id="${escapedText}">${text}</h${level}>`;
+          };
+          window.marked.use({ renderer });
+        }
+      });
+    </script>
+    <style>
+      /* Custom Scrollbar using Slate colors */
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-track { background: #f1f5f9; }
+      .dark ::-webkit-scrollbar-track { background: #0f172a; }
+      ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+      .dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+      ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+      .dark ::-webkit-scrollbar-thumb:hover { background: #334155; }
+
+      body {
+        background-color: #f8fafc; /* Slate 50 */
+        color: #0f172a; /* Slate 900 */
+        transition: background-color 0.3s, color 0.3s;
+      }
+      
+      .dark body {
+        background-color: #0f172a; /* Slate 900 / Navy 800 */
+        color: #f8fafc;
+      }
+
+      /* Compact layout - reduce container max-width */
+      .container {
+        max-width: 1350px !important;
+      }
+
+      @media (min-width: 1536px) {
+        .container {
+          max-width: 1350px !important;
+        }
+      }
+
+      .bg-grid-slate-200 { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='%23e2e8f0'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e"); }
+      .dark .bg-grid-white { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgba(255, 255, 255, 0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e"); }
+
+      /* Markdown Styles using Primary Blue */
+      .markdown-body { font-family: 'Inter', sans-serif; line-height: 1.7; font-size: 1rem; }
+      .markdown-body img { display: inline-block; vertical-align: middle; max-width: 100%; max-height: 24px; margin: 0 4px; border-radius: 4px; }
+      .markdown-body h1 { display: none; }
+      .markdown-body h2 { font-size: 1.75rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0; color: #0f172a; scroll-margin-top: 100px; }
+      .dark .markdown-body h2 { border-bottom-color: #1e293b; color: #f8fafc; }
+      .markdown-body h3 { font-size: 1.25rem; font-weight: 600; margin-top: 2rem; margin-bottom: 1rem; color: #1e293b; scroll-margin-top: 100px; }
+      .dark .markdown-body h3 { color: #e2e8f0; }
+      .markdown-body ul { list-style-type: none; padding-left: 0; margin-bottom: 1.5rem; }
+      .markdown-body ul li { position: relative; padding-left: 1.5rem; margin-bottom: 0.5rem; color: #475569; }
+      .dark .markdown-body ul li { color: #94a3b8; }
+      .markdown-body ul li::before { content: "•"; position: absolute; left: 0; color: #2563eb; font-weight: bold; }
+      .dark .markdown-body ul li::before { color: #3b82f6; }
+      .markdown-body a { color: #2563eb; text-decoration: none; font-weight: 500; border-bottom: 1px solid transparent; transition: all 0.2s; }
+      .dark .markdown-body a { color: #3b82f6; }
+      .markdown-body a:hover { border-bottom-color: currentColor; }
+      .markdown-body pre { background-color: #1e293b; color: #e2e8f0; padding: 1.25rem; border-radius: 0.75rem; overflow-x: auto; margin: 1.5rem 0; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+      .markdown-body code { font-family: 'JetBrains Mono', monospace; font-size: 0.85em; background-color: #f1f5f9; color: #0f172a; padding: 0.2rem 0.4rem; border-radius: 0.25rem; }
+      .dark .markdown-body code { background-color: #1e293b; color: #e2e8f0; }
+      .markdown-body blockquote { border-left: 4px solid #2563eb; background-color: #eff6ff; padding: 1rem 1.5rem; border-radius: 0 0.5rem 0.5rem 0; margin: 1.5rem 0; color: #334155; font-style: italic; }
+      .dark .markdown-body blockquote { border-left-color: #3b82f6; background-color: rgba(59, 130, 246, 0.1); color: #cbd5e1; }
+      .markdown-body table { width: 100%; border-collapse: collapse; margin: 2rem 0; }
+      .markdown-body th { text-align: left; padding: 0.75rem; background-color: #f1f5f9; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
+      .dark .markdown-body th { background-color: #1e293b; border-bottom-color: #334155; }
+      .markdown-body td { padding: 0.75rem; border-bottom: 1px solid #e2e8f0; }
+      .dark .markdown-body td { border-bottom-color: #1e293b; }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^12.23.24",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
