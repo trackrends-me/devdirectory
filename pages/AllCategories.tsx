@@ -1,8 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { CATEGORY_GROUPS } from '../services/dataService';
 import { CategoryCard } from '../components/ui/Cards';
+import { usePagination } from '../hooks/usePagination';
+import { PaginationControls } from '../components/PaginationControls';
 
 export const AllCategories: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +21,11 @@ export const AllCategories: React.FC = () => {
     )
   })).filter(group => group.categories.length > 0 || searchTerm === '');
 
+  // Flatten categories for pagination
+  const allCategories = filteredGroups.flatMap(group => 
+    group.categories.map(cat => ({ ...cat, groupName: group.name, groupSlug: group.slug }))
+  );
+
   // Scroll to top when page content changes significantly
   useEffect(() => {
     // Only scroll if search term changed (not on initial mount)
@@ -27,6 +33,30 @@ export const AllCategories: React.FC = () => {
       window.scrollTo(0, 0);
     }
   }, [filteredGroups]);
+
+  // Pagination setup
+  const { paginatedData, state: paginationState, goToPage, nextPage, prevPage, setPageSize } = usePagination(allCategories, 80);
+
+  // Reset pagination when search term changes
+  useEffect(() => {
+    goToPage(1);
+  }, [searchTerm, goToPage]);
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+  };
+
+  const handlePageChange = (page: number) => {
+    goToPage(page);
+  };
+
+  const handlePrev = () => {
+    prevPage();
+  };
+
+  const handleNext = () => {
+    nextPage();
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -59,28 +89,31 @@ export const AllCategories: React.FC = () => {
       {/* Categories Grid */}
       <div className="flex-1 py-12">
         <div className="container mx-auto px-6">
-          <div className="space-y-20">
-            {filteredGroups.length > 0 ? (
-              filteredGroups.map(group => (
-                <div key={group.slug}>
-                  <div className="flex items-center gap-4 mb-8">
-                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white">{group.name}</h2>
-                    <div className="h-px bg-slate-200 dark:bg-white/10 flex-grow"></div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {group.categories.map(category => (
-                      <CategoryCard key={category.id} category={category} />
-                    ))}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-slate-600 dark:text-slate-400">No categories found matching "{searchTerm}"</p>
+          {allCategories.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                {paginatedData.map(category => (
+                  <CategoryCard key={category.id} category={category} />
+                ))}
               </div>
-            )}
-          </div>
+
+              {/* Pagination Controls */}
+              <PaginationControls 
+                currentPage={paginationState.currentPage}
+                totalPages={paginationState.totalPages}
+                totalItems={paginationState.totalItems}
+                pageSize={paginationState.pageSize}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+                onNext={handleNext}
+                onPrev={handlePrev}
+              />
+            </>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-slate-600 dark:text-slate-400">No categories found matching "{searchTerm}"</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

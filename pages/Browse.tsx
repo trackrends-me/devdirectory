@@ -6,6 +6,8 @@ import { supabaseToolsService } from '../services/supabaseDataService';
 import { ToolCard } from '../components/ui/Cards';
 import { Tool } from '../types';
 import { Sidebar } from '../components/Sidebar';
+import { usePagination } from '../hooks/usePagination';
+import { PaginationControls } from '../components/PaginationControls';
 
 export const Browse: React.FC = () => {
   const location = useLocation();
@@ -178,6 +180,30 @@ export const Browse: React.FC = () => {
     navigate(`/browse?cat=${slug}`);
   };
 
+  // Pagination
+  const { paginatedData, state: paginationState, goToPage, nextPage, prevPage, setPageSize } = usePagination(filteredTools, 60);
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    goToPage(1);
+  }, [searchTerm, selectedGroup, selectedCategory, selectedPricing, minStars, selectedTags, goToPage]);
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+  };
+
+  const handlePageChange = (page: number) => {
+    goToPage(page);
+  };
+
+  const handlePrev = () => {
+    prevPage();
+  };
+
+  const handleNext = () => {
+    nextPage();
+  };
+
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-navy-950">
       
@@ -244,13 +270,27 @@ export const Browse: React.FC = () => {
                 </button>
             </div>
 
-            {/* Results Grid - 4 Columns */}
+            {/* Results Grid - Paginated */}
             {filteredTools.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredTools.map(tool => (
-                    <ToolCard key={tool.id} tool={tool} />
-                ))}
-                </div>
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    {paginatedData.map(tool => (
+                        <ToolCard key={tool.id} tool={tool} />
+                    ))}
+                  </div>
+
+                  {/* Pagination Controls */}
+                  <PaginationControls 
+                    currentPage={paginationState.currentPage}
+                    totalPages={paginationState.totalPages}
+                    totalItems={paginationState.totalItems}
+                    pageSize={paginationState.pageSize}
+                    onPageChange={handlePageChange}
+                    onPageSizeChange={handlePageSizeChange}
+                    onNext={handleNext}
+                    onPrev={handlePrev}
+                  />
+                </>
             ) : (
                 <div className="text-center py-24 bg-white dark:bg-navy-800 rounded-2xl border border-slate-200 dark:border-white/5 border-dashed">
                     <div className="w-16 h-16 bg-slate-50 dark:bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
